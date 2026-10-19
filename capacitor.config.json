@@ -1,0 +1,9 @@
+{
+  "appId": "cl.escuelariopuelo.sonometro",
+  "appName": "Sonómetro Escolar",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  }
+}

@@ -1,0 +1,51 @@
+name: Build Android APK
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Install dependencies
+        run: npm install
+      - name: Add Android platform
+        run: npx cap add android
+      - name: Add microphone permission
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("android/app/src/main/AndroidManifest.xml")
+          s = p.read_text()
+          permission = '<uses-permission android:name="android.permission.RECORD_AUDIO" />'
+          if permission not in s:
+              s = s.replace('<manifest ', '<manifest ', 1)
+              pos = s.find('>', s.find('<manifest'))
+              s = s[:pos+1] + '\\n    ' + permission + s[pos+1:]
+          p.write_text(s)
+          PY
+      - name: Sync web assets
+        run: npx cap sync android
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Sonometro-Escolar-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error

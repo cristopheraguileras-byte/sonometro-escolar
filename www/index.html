@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#102a43">
+<title>Sonómetro Escolar</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand-mark">♫</div>
+  <div><h1>Sonómetro Escolar</h1><p>Monitor de ruido ambiental</p></div>
+</header>
+<main>
+  <section class="panel live-panel">
+    <div class="section-head"><div><span class="eyebrow">MEDICIÓN EN VIVO</span><h2>Semáforo de ruido</h2></div><span id="statusPill" class="pill neutral">Detenido</span></div>
+    <div id="traffic" class="traffic green">
+      <div class="light light-red"></div><div class="light light-yellow"></div><div class="light light-green"></div>
+    </div>
+    <div class="reading"><span id="dbValue">—</span><small>dB estimados</small></div>
+    <div id="levelName" class="level-name">Listo para medir</div>
+    <p id="hint" class="hint">Pulsa “Iniciar medición” y permite el acceso al micrófono.</p>
+    <div class="button-row">
+      <button id="startBtn" class="primary">▶ Iniciar medición</button>
+      <button id="stopBtn" class="secondary" disabled>■ Finalizar</button>
+    </div>
+    <div class="session-meta"><div><span>Tiempo</span><strong id="elapsed">00:00</strong></div><div><span>Muestras</span><strong id="samples">0</strong></div><div><span>Promedio</span><strong id="average">—</strong></div></div>
+  </section>
+  <section class="panel">
+    <div class="section-head"><div><span class="eyebrow">SESIÓN ACTUAL</span><h2>Distribución por color</h2></div></div>
+    <div class="bar-row"><div class="bar-label"><span class="dot green-dot"></span>Verde <b id="greenTime">00:00 · 0%</b></div><div class="track"><div id="greenBar" class="fill green-fill"></div></div></div>
+    <div class="bar-row"><div class="bar-label"><span class="dot yellow-dot"></span>Amarillo <b id="yellowTime">00:00 · 0%</b></div><div class="track"><div id="yellowBar" class="fill yellow-fill"></div></div></div>
+    <div class="bar-row"><div class="bar-label"><span class="dot red-dot"></span>Rojo <b id="redTime">00:00 · 0%</b></div><div class="track"><div id="redBar" class="fill red-fill"></div></div></div>
+    <p class="fine">Los tiempos se calculan a partir de muestras cada 1 segundo. La última muestra puede tener una duración parcial.</p>
+  </section>
+  <section class="panel">
+    <div class="section-head"><div><span class="eyebrow">EVOLUCIÓN</span><h2>Nivel de ruido</h2></div></div>
+    <canvas id="chart" height="180" aria-label="Gráfico de nivel de ruido"></canvas>
+    <div class="chart-legend"><span><i class="dot green-dot"></i> 0–45 dB</span><span><i class="dot yellow-dot"></i> 45–70 dB</span><span><i class="dot red-dot"></i> &gt;70 dB</span></div>
+  </section>
+  <section class="panel">
+    <div class="section-head"><div><span class="eyebrow">REGISTRO</span><h2>Guardar sesión</h2></div></div>
+    <label for="sessionName">Nombre de la sesión (opcional)</label><input id="sessionName" maxlength="70" placeholder="Ej.: 4° básico, trabajo grupal">
+    <button id="saveBtn" class="primary full" disabled>Guardar en historial</button>
+    <p id="saveMessage" class="fine">Finaliza una medición para guardarla.</p>
+  </section>
+  <section class="panel">
+    <div class="section-head"><div><span class="eyebrow">DATOS GUARDADOS</span><h2>Historial de sesiones</h2></div><button id="exportAllBtn" class="small-btn">Exportar CSV</button></div>
+    <div id="historyList" class="history-list"><p class="empty">Todavía no hay sesiones guardadas.</p></div>
+    <button id="clearHistoryBtn" class="text-btn">Borrar todo el historial</button>
+  </section>
+  <details class="panel settings">
+    <summary>Configuración y calibración</summary>
+    <label for="offset">Ajuste de calibración (dB)</label>
+    <div class="offset-row"><input id="offset" type="number" min="0" max="160" step="1" value="90"><button id="applyOffset" class="secondary">Aplicar</button></div>
+    <p class="fine">El teléfono no es un sonómetro profesional. La app calcula un nivel aproximado desde la señal del micrófono y aplica este ajuste. Para aproximarse a dB SPL reales, compara con un sonómetro de referencia y ajusta el valor. Los resultados varían según teléfono, micrófono, funda y ambiente.</p>
+    <p class="fine">Umbrales: verde ≤45 dB; amarillo &gt;45 y ≤70 dB; rojo &gt;70 dB.</p>
+  </details>
+  <footer>Sonómetro Escolar · Los registros se guardan en este dispositivo.</footer>
+</main>
+<div id="toast" role="status" class="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
