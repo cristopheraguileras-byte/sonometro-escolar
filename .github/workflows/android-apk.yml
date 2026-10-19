@@ -35,17 +35,25 @@ jobs:
       - name: Crear plataforma Android
         run: npx cap add android
 
-      - name: Configurar permiso de micrófono
+      - name: Configurar permisos de audio
         run: |
           python3 - <<'PY'
           from pathlib import Path
+
           p = Path("android/app/src/main/AndroidManifest.xml")
           s = p.read_text()
-          permission = '<uses-permission android:name="android.permission.RECORD_AUDIO" />'
-          if permission not in s:
-              s = s.replace("<manifest ", "<manifest ", 1)
-              pos = s.find(">", s.find("<manifest"))
-              s = s[:pos+1] + "\n    " + permission + s[pos+1:]
+
+          permissions = [
+              "android.permission.RECORD_AUDIO",
+              "android.permission.MODIFY_AUDIO_SETTINGS",
+          ]
+
+          for permission in permissions:
+              tag = f'<uses-permission android:name="{permission}" />'
+              if permission not in s:
+                  pos = s.find(">", s.find("<manifest"))
+                  s = s[:pos+1] + "\n    " + tag + s[pos+1:]
+
           p.write_text(s)
           PY
 
